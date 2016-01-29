@@ -1,10 +1,10 @@
 require 'spec_helper'
-require_relative '../helpers/maybe'
+require_relative '../../helpers/maybe'
 
-describe Monad::DoNotation do
+describe Monad::Syntax::Do do
   context "sequencing" do
     def my_monad
-      Monad::DoNotation.for(Maybe) do
+      Monad::Syntax::Do.using(Maybe) do
         Some(4)
         Some(5)
         Some(6)
@@ -18,7 +18,7 @@ describe Monad::DoNotation do
 
   context "binding variables" do
     def my_monad
-      Monad::DoNotation.for(Maybe) do
+      Monad::Syntax::Do.using(Maybe) do
         x <- Some(4)
         y <- Some(x + 5)
         Some(x + y)
@@ -32,7 +32,7 @@ describe Monad::DoNotation do
 
   context "return" do
     def my_monad
-      Monad::DoNotation.for(Maybe) do
+      Monad::Syntax::Do.using(Maybe) do
         x <- Some(3)
         return x * 2
       end
@@ -45,7 +45,7 @@ describe Monad::DoNotation do
 
   context "let expression" do
     def my_monad
-      Monad::DoNotation.for(Maybe) do
+      Monad::Syntax::Do.using(Maybe) do
         let x = 1 + 3
         Some(x)
       end
@@ -58,7 +58,7 @@ describe Monad::DoNotation do
 
   context "complex example" do
     def my_monad(optional)
-      Monad::DoNotation.for(Maybe) do
+      Monad::Syntax::Do.using(Maybe) do
         x <- optional
         y <- (if x == "bar"
           None.new
@@ -87,7 +87,7 @@ describe Monad::DoNotation do
 
   context "use blocks within do notation" do
     def my_monad
-      Monad::DoNotation.for(Maybe) do
+      Monad::Syntax::Do.using(Maybe) do
         Some(1).bind do |v|
           Some(v + 1)
         end
@@ -101,7 +101,7 @@ describe Monad::DoNotation do
 
   context "pass lambda as block" do
     def my_monad(l)
-      Monad::DoNotation.for(Maybe, &l)
+      Monad::Syntax::Do.using(Maybe, &l)
     end
 
     it "doesn't break" do
@@ -114,9 +114,9 @@ describe Monad::DoNotation do
     end
   end
 
-  context "wrapper function around .for" do
+  context "wrapper function around .using" do
     def my_wrapper(&block)
-      Monad::DoNotation.for(Maybe, &block)
+      Monad::Syntax::Do.using(Maybe, &block)
     end
 
     def my_monad
