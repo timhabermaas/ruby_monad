@@ -23,7 +23,7 @@ module Monad
         return sexp.last
       end
       looop = lambda do |syntax|
-        if syntax.is_a?(Array) && syntax.first == :iter && syntax[1].is_a?(Array) && syntax[1].first == :call && syntax[1][2] == :for
+        if syntax.is_a?(Array) && syntax.first == :iter && syntax[1].is_a?(Array) && syntax[1].first == :call
           return syntax
         elsif syntax.is_a?(Array)
           syntax.find do |s|

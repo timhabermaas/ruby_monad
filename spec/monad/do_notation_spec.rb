@@ -99,4 +99,20 @@ describe Monad::DoNotation do
       expect(my_monad(l)).to eq Some.new(2)
     end
   end
+
+  context "wrapper function around .for" do
+    def my_wrapper(&block)
+      Monad::DoNotation.for(Maybe, &block)
+    end
+
+    def my_monad
+      my_wrapper do
+        return 2 + 4
+      end
+    end
+
+    it "works" do
+      expect(my_monad).to eq Some.new(6)
+    end
+  end
 end
