@@ -43,6 +43,19 @@ describe Monad::DoNotation do
     end
   end
 
+  context "let expression" do
+    def my_monad
+      Monad::DoNotation.for(Maybe) do
+        let x = 1 + 3
+        Some.new(x)
+      end
+    end
+
+    it "returns Some(4)" do
+      expect(my_monad).to eq Some.new(4)
+    end
+  end
+
   context "complex example" do
     def my_monad(optional)
       Monad::DoNotation.for(Maybe) do
@@ -52,18 +65,19 @@ describe Monad::DoNotation do
         else
           Some.new("correct")
         end)
+        let z = x.upcase
         case y
         when "correct"
           Some.new("ignored")
         else
           Some.new("ignored as well")
         end
-        return x + y
+        return x + y + z
       end
     end
 
     it "returns Some when given 'foo'" do
-      expect(my_monad(Some.new("foo"))).to eq Some.new("foocorrect")
+      expect(my_monad(Some.new("foo"))).to eq Some.new("foocorrectFOO")
     end
 
     it "returns None when given 'bar'" do

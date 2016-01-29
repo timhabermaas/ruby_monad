@@ -7,6 +7,7 @@ module Monad
   class DoNotation
     Assignment = Struct.new(:lhs, :rhs)
     SingleStatement = Struct.new(:rhs)
+    LetStatement = Struct.new(:lhs, :rhs)
     Unit = Struct.new(:rhs)
 
     def self.for(monad_type, &block)
@@ -65,17 +66,23 @@ module Monad
         binding.eval(row.rhs).bind do |_|
           execute(monad_type, rows[1..-1], binding)
         end
+      when LetStatement
+        value = binding.eval(row.rhs)
+        binding.local_variable_set(row.lhs, value)
+        execute(monad_type, rows[1..-1], binding)
       when Unit
         monad_type.return(binding.eval(row.rhs))
       end
     end
 
     def self.parse_row(row)
-      if is_assignment(row)
+      # s(:call, nil, :let, s(:lasgn, :x, s(:lit, 1)))
+      if is_let_statement(row)
+        LetStatement.new(row[3][1], Ruby2Ruby.new.process(row[3].last))
+      elsif is_assignment(row)
         Assignment.new(row[1].last, Ruby2Ruby.new.process(row.last[1]))
       elsif is_return(row)
         Unit.new(Ruby2Ruby.new.process(row.last))
-      elsif is_let_statement(row)
       else
         SingleStatement.new(Ruby2Ruby.new.process(row))
       end
@@ -91,8 +98,7 @@ module Monad
     end
 
     def self.is_let_statement(row)
-      # TODO
-      false
+      row.first == :call && row[2] == :let
     end
 
     def self.is_assignment(row)
