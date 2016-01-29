@@ -35,3 +35,7 @@ class Some < Maybe
     other.is_a?(Some) && other.unwrap == self.unwrap
   end
 end
+
+def Some(v)
+  Some.new(v)
+end

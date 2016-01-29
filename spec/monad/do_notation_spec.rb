@@ -5,41 +5,41 @@ describe Monad::DoNotation do
   context "sequencing" do
     def my_monad
       Monad::DoNotation.for(Maybe) do
-        Some.new(4)
-        Some.new(5)
-        Some.new(6)
+        Some(4)
+        Some(5)
+        Some(6)
       end
     end
 
     it "returns the last Maybe value" do
-      expect(my_monad).to eq Some.new(6)
+      expect(my_monad).to eq Some(6)
     end
   end
 
   context "binding variables" do
     def my_monad
       Monad::DoNotation.for(Maybe) do
-        x <- Some.new(4)
-        y <- Some.new(x + 5)
-        Some.new(x + y)
+        x <- Some(4)
+        y <- Some(x + 5)
+        Some(x + y)
       end
     end
 
     it "works" do
-      expect(my_monad).to eq Some.new(13)
+      expect(my_monad).to eq Some(13)
     end
   end
 
   context "return" do
     def my_monad
       Monad::DoNotation.for(Maybe) do
-        x <- Some.new(3)
+        x <- Some(3)
         return x * 2
       end
     end
 
     it "wraps the return value in the provided Monad" do
-      expect(my_monad).to eq Some.new(6)
+      expect(my_monad).to eq Some(6)
     end
   end
 
@@ -47,12 +47,12 @@ describe Monad::DoNotation do
     def my_monad
       Monad::DoNotation.for(Maybe) do
         let x = 1 + 3
-        Some.new(x)
+        Some(x)
       end
     end
 
     it "returns Some(4)" do
-      expect(my_monad).to eq Some.new(4)
+      expect(my_monad).to eq Some(4)
     end
   end
 
@@ -63,39 +63,39 @@ describe Monad::DoNotation do
         y <- (if x == "bar"
           None.new
         else
-          Some.new("correct")
+          Some("correct")
         end)
         let z = x.upcase
         case y
         when "correct"
-          Some.new("ignored")
+          Some("ignored")
         else
-          Some.new("ignored as well")
+          Some("ignored as well")
         end
         return x + y + z
       end
     end
 
     it "returns Some when given 'foo'" do
-      expect(my_monad(Some.new("foo"))).to eq Some.new("foocorrectFOO")
+      expect(my_monad(Some("foo"))).to eq Some("foocorrectFOO")
     end
 
     it "returns None when given 'bar'" do
-      expect(my_monad(Some.new("bar"))).to eq None.new
+      expect(my_monad(Some("bar"))).to eq None.new
     end
   end
 
   context "use blocks within do notation" do
     def my_monad
       Monad::DoNotation.for(Maybe) do
-        Some.new(1).bind do |v|
-          Some.new(v + 1)
+        Some(1).bind do |v|
+          Some(v + 1)
         end
       end
     end
 
     it "doesn't break" do
-      expect(my_monad).to eq Some.new(2)
+      expect(my_monad).to eq Some(2)
     end
   end
 
@@ -106,11 +106,11 @@ describe Monad::DoNotation do
 
     it "doesn't break" do
       l = -> {
-        Some.new(1).bind do |v|
-          Some.new(v + 1)
+        Some(1).bind do |v|
+          Some(v + 1)
         end
       }
-      expect(my_monad(l)).to eq Some.new(2)
+      expect(my_monad(l)).to eq Some(2)
     end
   end
 
@@ -126,7 +126,7 @@ describe Monad::DoNotation do
     end
 
     it "works" do
-      expect(my_monad).to eq Some.new(6)
+      expect(my_monad).to eq Some(6)
     end
   end
 end

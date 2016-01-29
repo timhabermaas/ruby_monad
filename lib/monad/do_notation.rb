@@ -104,9 +104,9 @@ module Monad
     def self.is_assignment(row)
       row.size == 4 &&
         row.first == :call &&
-        is_single_variable(row[1]) &&
         row[2] == :< &&
-        is_unary_minus(row[3])
+        is_unary_minus(row[3]) &&
+        is_single_variable(row[1])
     end
 
     def self.is_unary_minus(x)
