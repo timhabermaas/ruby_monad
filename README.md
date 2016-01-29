@@ -1,4 +1,5 @@
 # Monad
+[![Build Status](https://travis-ci.org/timhabermaas/ruby_monad.svg?branch=master)](https://travis-ci.org/timhabermaas/ruby_monad)
 
 Do notation for Ruby.
 
